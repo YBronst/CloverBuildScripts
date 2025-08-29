@@ -8,7 +8,7 @@
 export TERM=xterm-256color
 export LC_ALL=C.UTF-8
 
-# Определение базовой директории (относительно папки, где находится скрипт)
+# Defining the base directory
 BASE_DIR="$(dirname "$0")"
 
 # $1 argument overrides MYTOOLCHAIN variable (e.g., GCC53)
@@ -61,7 +61,7 @@ COL_WHITE_ITALIC=$(tput sitm; tput setaf 7)  # Italic White
 # Reset all attributes
 COL_RESET=$(tput sgr0)
 
-# Проверка доступности папки Downloads
+# Checking the availability of the Downloads folder
 if [[ ! -w "$HOME/Downloads" ]]; then
   echo "${COL_RED}Error: Cannot write to $HOME/Downloads. Please check permissions.${COL_RESET}"
   exit 1
