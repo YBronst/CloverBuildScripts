@@ -10,9 +10,9 @@ ebuildme the same as buildme but only english.
 
 xbuildme is very old but still a working version which added support for GCC151.
 To use these scripts:
-Open the terminal, enter the commands:
-cd src
-git clone https://github.com/YBronst/CloverBuildScripts.git
-cp -f CloverBuildScripts/* CloverBootloader
-cd CloverBootloader
-./buildme (./ebuildme) or ./xbuildme 😉
+1. Open the terminal, enter the commands:
+2. cd src
+3. git clone https://github.com/YBronst/CloverBuildScripts.git
+4. cp -f CloverBuildScripts/* CloverBootloader
+5. cd CloverBootloader
+6. ./buildme (./ebuildme) or ./xbuildme 😉
