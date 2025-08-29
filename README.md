@@ -9,14 +9,10 @@ Reworked interface color selection elements. Much that was unnecessary was dropp
 ebuildme the same as buildme but only english.
 
 xbuildme is very old but still a working version which added support for GCC151.
-
 To use these scripts:
-
 Open the terminal, enter the commands:
 cd src
-git clone https://github.com/YBronst/Clover-Build-Scripts.git
-cd Clover-Build-Scripts
-cp -f * CloverBootloader
-cd -
+git clone https://github.com/YBronst/CloverBuildScripts.git
+cp -f CloverBuildScripts/* CloverBootloader
 cd CloverBootloader
 ./buildme (./ebuildme) or ./xbuildme 😉
