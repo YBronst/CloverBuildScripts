@@ -1,0 +1,15 @@
+# OS X temporary files that should never be committed
+.vs
+.DS_Store
+.settings
+*.swp
+*.lock
+*.bak
+*~
+.cache
+
+# /
+# Translation files
+
+#work in progress
+*_wip
