@@ -13,6 +13,7 @@ To use these scripts:
 1. Open the terminal, enter the commands:
 2. cd src
 3. git clone https://github.com/YBronst/CloverBuildScripts.git
-4. cp -f CloverBuildScripts/* CloverBootloader
-5. cd CloverBootloader
-6. ./buildme (./ebuildme) or ./xbuildme 😉
+4. chmod +x CloverBuildScripts/buildme && chmod +x CloverBuildScripts/ebuildme && chmod +x CloverBuildScripts/xbuildme
+5. cp -f CloverBuildScripts/buildme CloverBootloader && cp -f CloverBuildScripts/ebuildme CloverBootloader && cp -f CloverBuildScripts/xbuildme CloverBootloader
+6. cd CloverBootloader
+7. ./buildme (./ebuildme) or ./xbuildme 😉
