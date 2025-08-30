@@ -293,7 +293,7 @@ make
 }
 
 BLC() {
-if [[ -d "${CLOVERROOT}/CloverPackage/BootLoaderChooser" ]]; then
+if [[ ! -d "${CLOVERROOT}/CloverPackage/BootLoaderChooser" ]]; then
   mkdir -p "${CLOVERROOT}/CloverPackage/BootLoaderChooser"
 fi
 curl -sLq https://github.com/jief666/BootloaderChooser/releases/download/1.4/BootX64.efi > "${CLOVERROOT}/CloverPackage/BootLoaderChooser/BootX64.efi"
@@ -538,11 +538,11 @@ MaciASL() {
 if [[ ! -d "$HOME/Downloads/ClovUtils" ]]; then
   mkdir -p "$HOME/Downloads/ClovUtils"
 fi
-cd "$HOME/Downloads/ClovUtils" && curl -sLq https://github.com/acidanthera/MaciASL/releases/download/1.6.2/MaciASL-1.6.2-RELEASE.dmg > MaciASL-1.6.2-RELEASE.dmg
-hdiutil attach -quiet -noverify -nobrowse MaciASL-1.6.2-RELEASE.dmg && cp -Rf /Volumes/MaciASL/MaciASL.app "$HOME/Downloads/ClovUtils"
+cd "$HOME/Downloads/ClovUtils" && curl -sLq https://github.com/acidanthera/MaciASL/releases/download/1.6.5/MaciASL-1.6.5-RELEASE.dmg > MaciASL-1.6.5-RELEASE.dmg
+hdiutil attach -quiet -noverify -nobrowse MaciASL-1.6.5-RELEASE.dmg && cp -Rf /Volumes/MaciASL/MaciASL.app "$HOME/Downloads/ClovUtils"
 hdiutil detach -force /Volumes/MaciASL
 xattr -d com.apple.quarantine "$HOME/Downloads/ClovUtils/MaciASL.app" 2>/dev/null || true
-rm -r "$HOME/Downloads/ClovUtils/MaciASL-1.6.2-RELEASE.dmg"
+rm -r "$HOME/Downloads/ClovUtils/MaciASL-1.6.5-RELEASE.dmg"
 open "$HOME/Downloads/ClovUtils"
 }
 
