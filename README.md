@@ -4,7 +4,7 @@ Utilities are now downloaded to the Downloads folder instead of the Desktop. The
 Interface color selection elements have been redesigned. Much of the unnecessary stuff has been removed, and things I consider necessary have been added.
 To use these scripts:
 === Open Terminal and enter the following commands in order ===
-cd "folder_name"   # the folder where you want to clone the Clover git repository, excluding system folders
+cd "folder_name"   #the folder where you want to clone the Clover git repository, excluding system folders
 git clone --recurse-submodules https://github.com/CloverHackyColor/CloverBootloader.git
 === Download and install Python 3.12 or higher and go to its installation folder ===
 cd /Library/Frameworks/Python.framework/Versions/3.12/bin/
@@ -20,20 +20,12 @@ cd ..
 === Download the build scripts ===
 git clone https://github.com/YBronst/CloverBuildScripts.git
 === If necessary, set them as executable ===
-chmod +x CloverBuildScripts/buildme
-# or
-chmod +x CloverBuildScripts/xbuildme
+chmod +x CloverBuildScripts/buildme or chmod +x CloverBuildScripts/xbuildme
 === Remove quarantine attribute ===
-xattr -d com.apple.quarantine CloverBuildScripts/buildme
-# or
-xattr -d com.apple.quarantine CloverBuildScripts/xbuildme
+xattr -d com.apple.quarantine CloverBuildScripts/buildme or xattr -d com.apple.quarantine CloverBuildScripts/xbuildme
 === Copy them (with replacement) into the Clover folder ===
-cp -f CloverBuildScripts/buildme CloverBootloader
-# or
-cp -f CloverBuildScripts/xbuildme CloverBootloader
+cp -f CloverBuildScripts/buildme CloverBootloader or cp -f CloverBuildScripts/xbuildme CloverBootloader
 === Go to the root folder of Clover ===
 cd CloverBootloader
-./buildme
-# or
-./xbuildme 😉
+./buildme or ./xbuildme 😉
 Enjoy watching the compilation process!
