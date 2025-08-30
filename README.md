@@ -1,7 +1,7 @@
 # Clover Bootloader Build Instructions
 
 To build a Clover bootloader from source, you can use either my **updated extended `buildme` script** or the older but updated `xbuildme` script.
-- It is an unstable version for experiments `tbuildme` better to refrain from using it for now.
+- There is also a third `tbuildme` extremely unstable version for experiments and I advise you to refrain from using it on a regular basis for now.
 
 ### Updates in this `buildme`:
 
