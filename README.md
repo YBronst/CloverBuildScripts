@@ -1,48 +1,75 @@
-To build a Clover bootloader from source on your own, use either my updated extended buildme script, or the old but updated xbuildme script.
-In this buildme many things have been updated:
-- Absolute paths have been replaced with relative ones,
-- Now Clover can be compiled from any user folder, except system or write-protected ones,
-- Utilities are now downloaded to the Downloads folder instead of the Desktop,
-- The outdated PlistEDPlus has been replaced with Xplist, which is open source,
-- Interface color selection elements have been redesigned,
-- Much of the unnecessary stuff has been removed, and things I consider necessary have been added.
+# Clover Bootloader Build Instructions
 
-To use these scripts:
+To build a Clover bootloader from source, you can use either my **updated extended `buildme` script** or the older but updated `xbuildme` script.
 
-=== Open Terminal and enter the following commands in order ===
-cd "folder_name" (the folder where you want to clone the Clover git repository, excluding system folders).
+### Updates in this `buildme`:
+
+* Absolute paths replaced with relative ones.
+* Can now compile Clover from any user folder (except system or write-protected folders).
+* Utilities are downloaded to the **Downloads** folder instead of the Desktop.
+* Outdated **PlistEDPlus** replaced with **Xplist** (open source).
+* Interface color selection elements redesigned.
+* Removed unnecessary components; added essential ones.
+
+## Step-by-Step Instructions
+
+### 1. Open Terminal and clone Clover repository
+
+```bash
+cd "folder_name"  # choose your folder, avoid system folders
 git clone --recurse-submodules https://github.com/CloverHackyColor/CloverBootloader.git
+```
 
-=== Download and install Python 3.12 or higher and go to its installation folder. ===
+### 2. Install Python 3.12 or higher
+
+```bash
+# Navigate to Python installation folder
 cd /Library/Frameworks/Python.framework/Versions/3.12/bin/
 
-=== Create an alias for Python. ===
+# Create an alias for Python
 sudo ln -s python3.12 python
+```
 
-=== Install the tools. ===
+### 3. Install necessary Python tools
+
+```bash
 pip3 install setuptools
+```
 
-=== Go to the root folder of Clover. ===
-cd "folder_name"
-make -C BaseTools "BUILD_CC=clang"
+### 4. Build BaseTools for Clover
 
-=== Go back one level ===
+```bash
+cd "folder_name"  # root folder of Clover
+make -C BaseTools BUILD_CC=clang
+```
+
+### 5. Prepare the build scripts
+
+```bash
+# Go back one level
 cd ..
 
-=== Download the build scripts ===
+# Download build scripts
 git clone https://github.com/YBronst/CloverBuildScripts.git
 
-=== If necessary, set them as executable ===
-chmod +x CloverBuildScripts/buildme or chmod +x CloverBuildScripts/xbuildme
+# Make scripts executable (if necessary)
+chmod +x CloverBuildScripts/buildme
+chmod +x CloverBuildScripts/xbuildme
 
-=== Remove quarantine attribute. ===
-xattr -d com.apple.quarantine CloverBuildScripts/buildme or xattr -d com.apple.quarantine CloverBuildScripts/xbuildme
+# Remove quarantine attribute
+xattr -d com.apple.quarantine CloverBuildScripts/buildme
+xattr -d com.apple.quarantine CloverBuildScripts/xbuildme
 
-=== Copy them (with replacement) into the Clover folder. ===
-cp -f CloverBuildScripts/buildme CloverBootloader or cp -f CloverBuildScripts/xbuildme CloverBootloader
+# Copy scripts to Clover folder (overwrite if needed)
+cp -f CloverBuildScripts/buildme CloverBootloader
+cp -f CloverBuildScripts/xbuildme CloverBootloader
+```
 
-=== Go to the root folder of Clover. ===
+### 6. Build Clover
+
+```bash
 cd CloverBootloader
-./buildme or ./xbuildme 😉
+./buildme  # or ./xbuildme 😉
+```
 
 Enjoy watching the compilation process!
