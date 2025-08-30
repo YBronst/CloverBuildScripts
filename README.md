@@ -10,7 +10,7 @@ xbuildme is very old but still a working version which added support for GCC151.
 
 To use these scripts:
 1. Open the terminal, enter the commands:
-2. cd to the folder where you want to clone the Clover git repository except system ones.
+2. cd (to the folder where you want to clone the Clover git repository except system ones).
 3. git clone --recurse-submodules https://github.com/CloverHackyColor/CloverBootloader.git
 5. === Download and install Python 3.12 or higher===.
 6. cd /Library/Frameworks/Python.framework/Versions/3.12/bin/
