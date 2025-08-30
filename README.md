@@ -1,7 +1,12 @@
-To build a Clover bootloader from source on your own, use my updated extended buildme script, or the old but updated xbuildme script.
-In this buildme, many things have been updated, absolute paths have been replaced with relative ones. Now Clover can be compiled from any user folder, except system or write-protected ones.
-Utilities are now downloaded to the Downloads folder instead of the Desktop. The outdated PlistEDPlus has been replaced with Xplist, which is open source.
-Interface color selection elements have been redesigned. Much of the unnecessary stuff has been removed, and things I consider necessary have been added.
+To build a Clover bootloader from source on your own, use either my updated extended buildme script, or the old but updated xbuildme script.
+In this buildme many things have been updated:
+- Absolute paths have been replaced with relative ones,
+- Now Clover can be compiled from any user folder, except system or write-protected ones,
+- Utilities are now downloaded to the Downloads folder instead of the Desktop,
+- The outdated PlistEDPlus has been replaced with Xplist, which is open source,
+- Interface color selection elements have been redesigned,
+- Much of the unnecessary stuff has been removed, and things I consider necessary have been added.
+
 To use these scripts:
 
 === Open Terminal and enter the following commands in order ===
