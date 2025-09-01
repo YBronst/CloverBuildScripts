@@ -227,60 +227,6 @@ else
 fi
 }
 
-# CRITICAL FIX 1: Fix problematic source code
-echo "Applying source code fixes..."
-
-ACPI_PARSER_H="OpenCorePkg/Library/OcAcpiLib/AcpiParser.h"
-ACPI_PARSER_C="OpenCorePkg/Library/OcAcpiLib/AcpiParser.c"
-
-if [ -f "$ACPI_PARSER_H" ]; then
-    # Backup
-    [ ! -f "${ACPI_PARSER_H}.backup" ] && cp "$ACPI_PARSER_H" "${ACPI_PARSER_H}.backup"
-    
-    # Fix multi-line comment on line 59
-    if grep -n "//  DEBUG (( \\\\" "$ACPI_PARSER_H" | grep -q "59:"; then
-        echo "Fixing AcpiParser.h line 59..."
-        sed -i '' '59s|//  DEBUG (( \\|/*  DEBUG (( |' "$ACPI_PARSER_H"
-        # Find and close the comment
-        NEXT_LINE=$(sed -n '60,70p' "$ACPI_PARSER_H" | grep -n "))" | head -1 | cut -d: -f1)
-        if [ -n "$NEXT_LINE" ]; then
-            ACTUAL_LINE=$((59 + NEXT_LINE))
-            sed -i '' "${ACTUAL_LINE}s|))|)) */|" "$ACPI_PARSER_H"
-        fi
-    fi
-fi
-
-if [ -f "$ACPI_PARSER_C" ]; then
-    # Backup
-    [ ! -f "${ACPI_PARSER_C}.backup" ] && cp "$ACPI_PARSER_C" "${ACPI_PARSER_C}.backup"
-    
-    # Fix unused variable on line 231
-    if grep -n "UINT8.*\*ScopeNameStart;" "$ACPI_PARSER_C" | grep -q "231:"; then
-        echo "Fixing AcpiParser.c line 231..."
-        sed -i '' '231s|  UINT8       \*ScopeNameStart;|  // UINT8       *ScopeNameStart; // Unused variable|' "$ACPI_PARSER_C"
-        # Comment any assignment of this variable
-        sed -i '' 's|ScopeNameStart[[:space:]]*=|// &|g' "$ACPI_PARSER_C"
-    fi
-fi
-
-# CRITICAL FIX 2: Configure GCC151 to suppress problematic warnings
-echo "Configuring GCC151 for error-free build..."
-
-TOOLS_DEF="BaseTools/Conf/tools_def.template"
-if [ -f "$TOOLS_DEF" ]; then
-    # Backup
-    [ ! -f "${TOOLS_DEF}.backup" ] && cp "$TOOLS_DEF" "${TOOLS_DEF}.backup"
-    
-    # Remove -Werror from all GCC151 lines
-    sed -i '' '/GCC151.*-Werror/s/-Werror//g' "$TOOLS_DEF"
-    
-    # Add specific flags to suppress problematic warnings
-    if ! grep -q "Wno-comment.*Wno-unused-but-set-variable" "$TOOLS_DEF"; then
-        sed -i '' '/^DEFINE GCC151_X64_CC_FLAGS/s|$| -Wno-comment -Wno-unused-but-set-variable -Wno-incompatible-ms-struct|' "$TOOLS_DEF"
-        sed -i '' '/^DEFINE GCC151_IA32_CC_FLAGS/s|$| -Wno-comment -Wno-unused-but-set-variable -Wno-incompatible-ms-struct|' "$TOOLS_DEF"
-    fi
-fi
-
 buildCloverHFSPlus() {
 if [[ -f "${CLOVERROOT}/FileSystems/HFSPlus/X64/HFSPlus.efi" ]]; then
   echo "building Clover with HFSPlus"
