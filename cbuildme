@@ -475,21 +475,6 @@ cd "${CLOVERROOT}"
 make -C BaseTools "BUILD_CC=clang"
 }
 
-## Utilities
-buildCPV() {
-revision=r$(git describe --tags $(git rev-list --tags --max-count=1))
-if [[ -d "${CLOVERROOT}/CloverPackage/CloverConfigPlistValidator" ]]; then
-  rm -Rf "${CLOVERROOT}/CloverPackage/CloverConfigPlistValidator"
-fi
-mkdir -p "${CLOVERROOT}/CloverPackage/CloverConfigPlistValidator"
-cd "${CLOVERROOT}/Xcode/CloverConfigPlistValidator"
-checkXCODE
-xcodebuild -project ./CloverConfigPlistValidator.xcodeproj -quiet CONFIGURATION_BUILD_DIR="${CLOVERROOT}/CloverPackage/CloverConfigPlistValidator"
-mv -f "${CLOVERROOT}/CloverPackage/CloverConfigPlistValidator/CloverConfigPlistValidator" "${CLOVERROOT}/CloverPackage/CloverConfigPlistValidator/CloverConfigPlistValidator_${revision}"
-rm -r "${CLOVERROOT}/CloverPackage/CloverConfigPlistValidator/*.dSYM"
-open "${CLOVERROOT}/CloverPackage/CloverConfigPlistValidator"
-}
-
 testing() {
 echo
 echo -e "${COL_GREEN} ---------------------------------------------------------------------------------"
