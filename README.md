@@ -3,9 +3,9 @@ README.md
 # Clover bootloader build instructions
 
 # To build the Clover bootloader from source, you can use either any any of my **updated `buildme` scripts**
-- buildme - classic
-- cduldme - clean
-- tbuldme - backup
+- slice-buildme - original
+- cduldme - clean version
+- pbuildme - version with built-in patches - raw
 - xbuildme - vintage
 - Clover Builder Clean - Download Clover source code and patch them and download release version buildme 
 
