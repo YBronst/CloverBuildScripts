@@ -277,7 +277,7 @@ if [[ -z "$WORKSPACE" ]]; then
 fi
 
 echo "[BUILD CLOVER RELEASE WITH XCODE]"
-xrel="XCODE$(defaults read /Applications/Xcode.app/Contents/version.plist CFBundleShortVersionString | cut -d. -f1)"
+local xrel="XCODE$(defaults read /Applications/Xcode.app/Contents/version.plist CFBundleShortVersionString | cut -d. -f1)"
 ./ebuild.sh -fr -mc --no-usb -D NO_GRUB_DRIVERS_EMBEDDED -t $xrel
 ./ebuild.sh -fr -D NO_GRUB_DRIVERS_EMBEDDED -t $xrel
 if [[ -x "${DIR_TOOLS}/CloverScripts/postbuild.sh" ]]; then
@@ -285,11 +285,6 @@ if [[ -x "${DIR_TOOLS}/CloverScripts/postbuild.sh" ]]; then
   echo "Running Clover postbuild script"
   "${DIR_TOOLS}/CloverScripts/postbuild.sh" "${CLOVERROOT}" $MYTOOLCHAIN
 fi
-}
-
-buildCCPV() {
-cd "${CLOVERROOT}/Xcode/CloverConfigPlistValidator"
-make
 }
 
 buildClover() {

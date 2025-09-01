@@ -69,6 +69,7 @@ if [ -n "$PYTHON_VERSION" ]; then
     fi
 else
     warn "No Python found. Installing Python 3.13..."
+exit 1
 fi
 
 # Set Python as the primary command
@@ -78,31 +79,6 @@ export PYTHON_PATH="$PYTHON_PATH"
 
 say "Using Python: $PYTHON_CMD (version $PYTHON_VERSION) at $PYTHON_PATH"
 echo
-    
-
-
-# Check if we need sudo and ask for password once
-if [ "$EUID" -ne 0 ]; then
-    # Check if we need to create any symlinks
-    if [ ! -L "/usr/local/bin/python" ] || [ ! -L "/usr/local/bin/python3" ]; then
-        say "Python symlinks need to be created (requires sudo)"
-        read -s -p "Enter your password (will be used for sudo): " SUDO_PASSWORD
-        echo
-        if [ -n "$SUDO_PASSWORD" ]; then
-            # Test sudo access
-            if echo "$SUDO_PASSWORD" | sudo -S true 2>/dev/null; then
-                ok "Sudo access confirmed"
-            else
-                err "Invalid password or no sudo access"
-                exit 1
-            fi
-        else
-            err "Password required for creating Python symlinks"
-            exit 1
-        fi
-    fi
-fi
-
 
 # Check setuptools
 if ! $PYTHON_CMD -c "import setuptools" 2>/dev/null; then
@@ -371,7 +347,6 @@ echo
 say "=== ENHANCED SETUP COMPLETE! ==="
 ok "Clover repository downloaded and configured successfully!"
 ok "All Python tools and dependencies installed/updated!"
-ok "Python symlinks configured!"
 ok "Enhanced source code fixes applied!"
 ok "Enhanced GCC151 configuration optimized!"
 ok "BaseTools compiled successfully!"
@@ -394,20 +369,6 @@ if [ -L "/usr/local/bin/python3" ]; then
 else
     warn "⚠ /usr/local/bin/python3 symlink missing (run with sudo to create)"
 fi
-echo
-
-# Show what was enhanced
-say "=== What Was Enhanced in v7 ==="
-say "✓ FIXED: Unbound variable error that caused v6 to fail"
-say "✓ Enhanced multi-line comment fix (more robust)"
-say "✓ Enhanced unused variable fix (more reliable)"
-say "✓ Enhanced GCC151 configuration (multiple safety flags)"
-say "✓ Enhanced verification of all fixes"
-say "✓ All external tool download options removed"
-say "✓ No more dependency on external repositories"
-say "✓ Focus on core Clover compilation"
-say "✓ Cleaner, more reliable build process"
-say "✓ Proper variable initialization to prevent script failures"
 echo
 
 # Setup complete - ask user preference
