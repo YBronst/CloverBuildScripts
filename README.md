@@ -7,7 +7,6 @@ README.md
 - cduldme - clean version built-in update - works, but nothing compiles after it. Solved by running pbuildme once
 - pbuildme - version with built-in patches - raw
 - xbuildme - vintage
-- Clover Builder Clean - Download Clover source code and patch them and download release version buildme 
 
 ### Updates in this `buildme`:
 
