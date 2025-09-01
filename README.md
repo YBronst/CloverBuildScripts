@@ -7,6 +7,7 @@ README.md
 - cduldme - clean
 - tbuldme - backup
 - xbuildme - vintage
+- Clover Builder Clean - Download Clover source code and patch them and download release version buildme 
 
 ### Updates in this `buildme`:
 
