@@ -3,9 +3,8 @@ README.md
 # Clover bootloader build instructions
 
 # To build the Clover bootloader from source, you can use either any any of my **updated `buildme` scripts**
-- slice-buildme - original
-- cduldme - clean version built-in update - works, but nothing compiles after it. Solved by running pbuildme once
-- pbuildme - version with built-in patches - raw
+- Clover Builder Clean - Script that will automatically download CloverBootloader from sources
+- buldme - Main script for compiling CloverBootloader
 - xbuildme - vintage
 
 ### Updates in this `buildme`:
@@ -62,12 +61,12 @@ cd ..
 git clone https://github.com/YBronst/CloverBuildScripts.git
 
 # Make scripts executable (if necessary)
+chmod +x CloverBuildScripts/Clover\ Builder\ Clean
 chmod +x CloverBuildScripts/buildme
-chmod +x CloverBuildScripts/*buildme
 
 # Remove quarantine attribute
+xattr -rc CloverBuildScripts/Clover\ Builder\ Clean
 xattr -rc CloverBuildScripts/buildme
-xattr -rc CloverBuildScripts/*buildme
 
 # Copy scripts to Clover folder (overwrite if necessary)
 cp -f CloverBuildScripts/buildme CloverBootloader
@@ -77,8 +76,7 @@ cp -f CloverBuildScripts/xbuildme CloverBootloader
 ### 7. Building Clover
 
 ```bash
-cd CloverBootloader
-./buildme # or ./xbuildme 😉
+./Clover\ Builder\ Clean
 ```
 
 Enjoy watching the compilation process!
