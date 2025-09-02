@@ -71,13 +71,9 @@ xattr -rc CloverBuildScripts/buildme
 
 # Copy scripts to Clover folder (overwrite if necessary)
 cp -f CloverBuildScripts/buildme CloverBootloader
-```
-
-### 7. Building Clover
-
 ```bash
-./Clover\ Builder\ Clean
+./buildme
 ```
-
-Enjoy watching the compilation process!
+### 7 If you need to automatically cloning all of the CloverBootloader sources, you can use CloverBuilderClean, which will do everything by himself and produce the necessary patches.
+- in this case step number 1 this instruction can be skipped
 
