@@ -6,6 +6,9 @@ README.md
 - Clover Builder Clean - Script that will automatically download CloverBootloader from sources
 - buldme - Main script for compiling CloverBootloader
 
+# If you need to automatically clone all CloverBootloader sources, you can use CloverBuilderClean, which will do everything itself and make the necessary patches
+- in this case step number 1 this instruction can be skipped
+  
 ### Updates in this `buildme`:
 
 * Absolute paths have been replaced with relative ones.
@@ -71,7 +74,3 @@ cp -f CloverBuildScripts/buildme CloverBootloader
 ```bash
 ./buildme
 ```
-
-### 7. If you need to automatically clone all CloverBootloader sources, you can use `CloverBuilderClean`, which will do everything itself and make the necessary patches
-- in this case step number 1 this instruction can be skipped
-
