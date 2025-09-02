@@ -3,7 +3,7 @@ README.md
 # Clover bootloader build instructions
 
 # To build the Clover loader from source, you can use my **updated `buildme` script**
-# First you need to run `"CloverBuilderClean` which will download all the necessary sources**
+# First you need to run `CloverBuilderClean` which will download all the necessary sources**
 
 - Clover Builder Clean - Script that will automatically download CloverBootloader from sources
 - buldme - Main script for compiling CloverBootloader
