@@ -168,25 +168,11 @@ fi
 
 ok "Enhanced GCC151 configuration completed!"
 
-
 # Configure environment variables
 export WORKSPACE="$REPO_DIR"
 export EDK_TOOLS_PATH="$REPO_DIR/BaseTools"
 
-# CRITICAL FIX 3: Replacing native buildme to newest one
-say "=== Replacing buildme with the latest fixed version ==="
 
-# Enhanced verification of applied fixes
-say "=== Verifying Enhanced Applied Fixes ==="
-
-# Verify AcpiParser.h fix
-if [ -f "$ACPI_PARSER_H" ]; then
-    if grep -q "/*  DEBUG (( " "$ACPI_PARSER_H" || ! grep -q "//  DEBUG (( \\\\" "$ACPI_PARSER_H"; then
-        ok "AcpiParser.h multi-line comment fix verified"
-    else
-        warn "AcpiParser.h multi-line comment fix may not have worked completely"
-    fi
-fi
 
 # Verify AcpiParser.c fix
 if [ -f "$ACPI_PARSER_C" ]; then
@@ -225,8 +211,7 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     say "Starting buildme..."
     sleep 1
-    echo
-    # Replace current process with buildme for clean execution
+    echo "Lease replace old buildme with new one for clean execution"
     exec ./buildme
 else
     say "To start building Clover later, run: ./buildme"
