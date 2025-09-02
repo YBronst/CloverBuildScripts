@@ -21,7 +21,7 @@ README.md
 ### 1. Open Terminal and clone the Clover repository
 
 ```bash
-cd "folder_name" # select the desired folder, avoiding system folders (as usual source)
+cd "folder_name" # select the desired folder, avoiding system folders (as usual src)
 git clone --recurse-submodules https://github.com/CloverHackyColor/CloverBootloader.git
 ```
 
