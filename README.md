@@ -74,6 +74,6 @@ cp -f CloverBuildScripts/buildme CloverBootloader
 ```bash
 ./buildme
 ```
-### 7 7 If you need to automatically clone all CloverBootloader sources, you can use `CloverBuilderClean`, which will do everything itself and make the necessary patches
+### 7 If you need to automatically clone all CloverBootloader sources, you can use `CloverBuilderClean`, which will do everything itself and make the necessary patches
 - in this case step number 1 this instruction can be skipped
 
