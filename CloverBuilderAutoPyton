@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+# CloverBuilderCleanest v3 - Fully Automated & Zsh Compatible
+set -euo pipefail
+
+# --- Logging ---
+say() { echo -e "\033[36m$*\033[0m"; }
+ok() { echo -e "\033[32m✔ $*\033[0m"; }
+warn() { echo -e "\033[33m⚠ $*\033[0m"; }
+err() { echo -e "\033[31m✘ $*\033[0m"; }
+
+# --- Variables ---
+WORKDIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_DIR="$WORKDIR/CloverBootloader"
+TOOLCHAIN_DIR="$WORKDIR/Toolchain"
+HFS_X64_DIR="$WORKDIR/X64"
+PYTHON_MIN="3.13"
+CLOVER_REPO="https://github.com/CloverHackyColor/CloverBootloader.git"
+BUILDME_REPO="https://github.com/YBronst/CloverBuildScripts.git"
+
+say "=== Clover Compiler Builder Clean & Robust Version (Automated) ==="
+echo
+
+# --- Python check & setup ---
+PY_VER=""
+if command -v python3 >/dev/null 2>&1; then
+    PY_VER=$(python3 --version 2>/dev/null | awk '{print $2}')
+fi
+
+vercomp() {
+    local IFS=.
+    local i
+    local -a ver1=($1) ver2=($2)
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do ver1[i]=0; done
+    for ((i=0; i<${#ver2[@]}; i++)); do
+        [[ -z "${ver1[i]:-}" ]] && ver1[i]=0
+        [[ -z "${ver2[i]:-}" ]] && ver2[i]=0
+        if ((10#${ver1[i]} > 10#${ver2[i]})); then return 1; fi
+        if ((10#${ver1[i]} < 10#${ver2[i]})); then return 2; fi
+    done
+    return 0
+}
+
+need_python=false
+if [[ -z "$PY_VER" ]]; then
+    need_python=true
+else
+    vercomp "$PY_VER" "$PYTHON_MIN"
+    cmp_res=$?
+    if [[ $cmp_res -eq 2 ]]; then
+        need_python=true
+    fi
+fi
+
+if $need_python; then
+    warn "Python $PYTHON_MIN or later not found. Opening download page..."
+    open "https://www.python.org/downloads/"
+    read -n1 -r -p "Press R/r when Python installed: " REPLY
+    echo
+    if [[ ! $(command -v python3) ]]; then
+        err "Python not found. Exiting."
+        exit 1
+    fi
+    PY_VER=$(python3 --version 2>/dev/null | awk '{print $2}')
+    vercomp "$PY_VER" "$PYTHON_MIN"
+    cmp_res=$?
+    if [[ $cmp_res -eq 2 ]]; then
+        err "Installed Python $PY_VER < required $PYTHON_MIN. Exiting."
+        exit 1
+    fi
+fi
+ok "Python $PY_VER OK."
+
+# --- Create symlink if missing ---
+PY_BIN_DIR="/Library/Frameworks/Python.framework/Versions/$PYTHON_MIN/bin"
+if [[ ! -f "$PY_BIN_DIR/python" ]]; then
+    say "Creating Python symlink..."
+    sudo ln -s "$PY_BIN_DIR/python$PYTHON_MIN" "$PY_BIN_DIR/python"
+    ok "Python symlink created."
+fi
+
+# --- Install pip packages ---
+say "Installing/updating pip packages..."
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade setuptools pip
+ok "pip and setuptools ready."
+
+# --- Copy Toolchain & X64 automatically ---
+[[ -d "$REPO_DIR/Toolchain" ]] && cp -fr "$REPO_DIR/Toolchain" "$WORKDIR/" || true
+[[ -d "$REPO_DIR/FileSystems/HFSPlus/X64" ]] && cp -fr "$REPO_DIR/FileSystems/HFSPlus/X64" "$WORKDIR/" || true
+ok "Toolchain and X64 folders copied for backup."
+
+# --- Git clone or reuse ---
+if [[ -d "$REPO_DIR" ]]; then
+    warn "Existing CloverBootloader folder detected."
+
+    # --- Confirm delete & clone ---
+    while true; do
+        read -n1 -r -p "Delete and clone fresh? (y/n): " REPLY
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            rm -rf "$REPO_DIR"
+            git clone --recurse-submodules "$CLOVER_REPO" "$REPO_DIR"
+            ok "Fresh clone done."
+            cd "$REPO_DIR"
+            make -C BaseTools BUILD_CC=clang
+            cd "$WORKDIR"
+            break
+        elif [[ $REPLY =~ ^[Nn]$ ]]; then
+            say "Using existing folder."
+            break
+        elif [[ ! $REPLY =~ [a-zA-Z] ]]; then
+            echo "Invalid option '$REPLY'. Repeat."
+        else
+            echo "Invalid option '$REPLY'. Repeat."
+        fi
+    done
+else
+    git clone --recurse-submodules "$CLOVER_REPO" "$REPO_DIR"
+    ok "Fresh clone done."
+    cd "$REPO_DIR"
+    make -C BaseTools BUILD_CC=clang
+    cd "$WORKDIR"
+fi
+
+# --- Restore Toolchain & X64 automatically ---
+[[ -d "$WORKDIR/Toolchain" ]] && cp -r "$WORKDIR/Toolchain" "$REPO_DIR/"
+[[ -d "$WORKDIR/X64" ]] && cp -r "$WORKDIR/X64" "$REPO_DIR/FileSystems/HFSPlus/"
+
+# --- Fetch latest buildme ---
+git clone "$BUILDME_REPO" "$WORKDIR/tmp_buildme"
+cp "$WORKDIR/tmp_buildme/buildme" "$REPO_DIR/buildme"
+rm -rf "$WORKDIR/tmp_buildme"
+ok "buildme updated."
+
+# --- Apply critical patches ---
+PATCH_FLAG_FILE="$REPO_DIR/.patched"
+if [[ ! -f "$PATCH_FLAG_FILE" ]]; then
+    say "Applying critical patches..."
+    ACPI_H="$REPO_DIR/OpenCorePkg/Library/OcAcpiLib/AcpiParser.h"
+    ACPI_C="$REPO_DIR/OpenCorePkg/Library/OcAcpiLib/AcpiParser.c"
+    TOOLS_DEF="$REPO_DIR/BaseTools/Conf/tools_def.template"
+
+    [[ -f "$ACPI_H" ]] && cp -n "$ACPI_H" "${ACPI_H}.backup"
+    [[ -f "$ACPI_H" ]] && sed -i '' 's|//  DEBUG (( \\|/*  DEBUG (( |' "$ACPI_H"
+    [[ -f "$ACPI_H" ]] && sed -i '' '0,/))/s|))|)) */|' "$ACPI_H"
+
+    [[ -f "$ACPI_C" ]] && cp -n "$ACPI_C" "${ACPI_C}.backup"
+    [[ -f "$ACPI_C" ]] && sed -i '' '/UINT8.*\*ScopeNameStart;/s/^/\/\/ /' "$ACPI_C"
+    [[ -f "$ACPI_C" ]] && sed -i '' '/ScopeNameStart[[:space:]]*=/s/^/\/\/ /' "$ACPI_C"
+
+    if [[ -f "$TOOLS_DEF" ]]; then
+        cp -n "$TOOLS_DEF" "${TOOLS_DEF}.backup"
+        for flag in IA32 X64 ARM AARCH64; do
+            sed -i '' "/GCC151_${flag}_CC_FLAGS/s|\$| -Wno-error=unused-but-set-variable -Wno-error=comment -Wno-error=deprecated-non-prototype|" "$TOOLS_DEF"
+        done
+    fi
+
+    touch "$PATCH_FLAG_FILE"
+    ok "Critical patches applied."
+else
+    ok "Critical patches already applied."
+fi
+
+# --- Final summary & auto-launch buildme ---
+say "=== Setup Complete ==="
+ok "Clover repository ready."
+ok "Critical patches applied."
+ok "Toolchain and X64 restored."
+ok "buildme is ready."
+
+cd "$REPO_DIR"
+say "Starting buildme automatically..."
+exec ./buildme
