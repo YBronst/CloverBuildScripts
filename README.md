@@ -3,11 +3,11 @@ README.md
 # Clover bootloader build instructions
 
 # To build the Clover loader from source, you can use my **updated `buildme` script**
-- Clover Builder Clean - Script that will automatically download CloverBootloader from sources
+- CloverBuilderAutoPyton - Script that will automatically download CloverBootloader from sources buldme - Main script and python-3.13.7-macos11
 - buldme - Main script for compiling CloverBootloader
 
-# If you need to automatically clone all CloverBootloader sources, you can use `CloverBuilderClean`, which will do everything itself and make the necessary patches
-- in this case step number 1 this instruction can be skipped
+# If you need to automatically clone all CloverBootloader sources, you can use `CloverBuilderAutoPyton`, which will do everything itself and make the necessary patches
+- in this case step number 1 and 2 this instruction can be skipped
   
 ### Updates in this `buildme`:
 
