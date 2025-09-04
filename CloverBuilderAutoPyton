@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CloverBuilderClean v3 - Automated & Zsh Compatible (No Toolchain/X64 Backup)
+# CloverBuilderClean v3 - Automated & Zsh Compatible
 set -euo pipefail
 
 # --- Logging ---
