@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+WORKDIR="$(dirname "$0")"
+REPO_DIR="$WORKDIR/CloverBootloader"
+ACPI_PARSER_H="$REPO_DIR/OpenCorePkg/Library/OcAcpiLib/AcpiParser.h"
+ACPI_PARSER_C="$REPO_DIR/OpenCorePkg/Library/OcAcpiLib/AcpiParser.c"
+TOOLS_DEF_TEMPLATE="$REPO_DIR/BaseTools/Conf/tools_def.template"
+
+# --- Fix multi-line comment in AcpiParser.h ---
+if [ -f "$ACPI_PARSER_H" ]; then
+    cp -n "$ACPI_PARSER_H" "${ACPI_PARSER_H}.backup"
+    sed -i '' 's|//  DEBUG (( \\|/*  DEBUG (( |' "$ACPI_PARSER_H"
+    # Close the multi-line comment before the first line with "))"
+    sed -i '' '0,/))/s|))|)) */|' "$ACPI_PARSER_H"
+    echo "✔ AcpiParser.h multi-line comment fixed"
+fi
+
+# --- Comment out unused variable in AcpiParser.c ---
+if [ -f "$ACPI_PARSER_C" ]; then
+    cp -n "$ACPI_PARSER_C" "${ACPI_PARSER_C}.backup"
+    sed -i '' '/UINT8.*\*ScopeNameStart;/s/^/\/\/ /' "$ACPI_PARSER_C"
+    sed -i '' '/ScopeNameStart[[:space:]]*=/s/^/\/\/ /' "$ACPI_PARSER_C"
+    echo "✔ AcpiParser.c unused variable commented"
+fi
+
+# --- Ensure GCC151 flags suppress warnings ---
+if [ -f "$TOOLS_DEF_TEMPLATE" ]; then
+    cp -n "$TOOLS_DEF_TEMPLATE" "${TOOLS_DEF_TEMPLATE}.backup"
+    sed -i '' '/GCC151_IA32_CC_FLAGS/s|$| -Wno-error=unused-but-set-variable -Wno-error=comment -Wno-error=deprecated-non-prototype|' "$TOOLS_DEF_TEMPLATE"
+    sed -i '' '/GCC151_X64_CC_FLAGS/s|$| -Wno-error=unused-but-set-variable -Wno-error=comment -Wno-error=deprecated-non-prototype|' "$TOOLS_DEF_TEMPLATE"
+    sed -i '' '/GCC151_ARM_CC_FLAGS/s|$| -Wno-error=unused-but-set-variable -Wno-error=comment -Wno-error=deprecated-non-prototype|' "$TOOLS_DEF_TEMPLATE"
+    sed -i '' '/GCC151_AARCH64_CC_FLAGS/s|$| -Wno-error=unused-but-set-variable -Wno-error=comment -Wno-error=deprecated-non-prototype|' "$TOOLS_DEF_TEMPLATE"
+    echo "✔ GCC151 flags enhanced"
+fi
