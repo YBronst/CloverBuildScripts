@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CloverBuilderClean v3 - Fully Automated & Zsh Compatible
+# CloverBuilderClean v3 - Automated & Zsh Compatible (No Toolchain/X64 Backup)
 set -euo pipefail
 
 # --- Logging ---
@@ -11,9 +11,8 @@ err() { echo -e "\033[31m✘ $*\033[0m"; }
 # --- Variables ---
 WORKDIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$WORKDIR/CloverBootloader"
-TOOLCHAIN_DIR="$WORKDIR/Toolchain"
-HFS_X64_DIR="$WORKDIR/X64"
 PYTHON_MIN="3.13"
+PYTHON_PKG="3.13.7"
 CLOVER_REPO="https://github.com/CloverHackyColor/CloverBootloader.git"
 BUILDME_REPO="https://github.com/YBronst/CloverBuildScripts.git"
 
@@ -27,6 +26,7 @@ if command -v python3 >/dev/null 2>&1; then
 fi
 
 vercomp() {
+    set +e
     local IFS=.
     local i
     local -a ver1=($1) ver2=($2)
@@ -38,6 +38,7 @@ vercomp() {
         if ((10#${ver1[i]} < 10#${ver2[i]})); then return 2; fi
     done
     return 0
+    set -e
 }
 
 need_python=false
@@ -52,19 +53,19 @@ else
 fi
 
 if $need_python; then
-    warn "Python $PYTHON_MIN or later not found. Opening download page..."
-    open "https://www.python.org/downloads/"
-    read -n1 -r -p "Press R/r when Python installed: " REPLY
-    echo
-    if [[ ! $(command -v python3) ]]; then
-        err "Python not found. Exiting."
+    warn "Python $PYTHON_MIN or later not found. Downloading and installing automatically..."
+    curl -sLq "https://www.python.org/ftp/python/$PYTHON_PKG/python-$PYTHON_PKG-macos11.pkg" -o python.pkg
+    sudo installer -pkg python.pkg -target /
+    rm -f python.pkg   # <-- удаляем пакет после установки
+    if ! command -v python3 >/dev/null 2>&1; then
+        err "Python не установлен. Прерывание."
         exit 1
     fi
     PY_VER=$(python3 --version 2>/dev/null | awk '{print $2}')
     vercomp "$PY_VER" "$PYTHON_MIN"
     cmp_res=$?
     if [[ $cmp_res -eq 2 ]]; then
-        err "Installed Python $PY_VER < required $PYTHON_MIN. Exiting."
+        err "Установленный Python $PY_VER < требуемый $PYTHON_MIN. Прерывание."
         exit 1
     fi
 fi
@@ -84,16 +85,9 @@ python3 -m ensurepip --upgrade
 python3 -m pip install --upgrade setuptools pip
 ok "pip and setuptools ready."
 
-# --- Copy Toolchain & X64 automatically ---
-[[ -d "$REPO_DIR/Toolchain" ]] && cp -fr "$REPO_DIR/Toolchain" "$WORKDIR/" || true
-[[ -d "$REPO_DIR/FileSystems/HFSPlus/X64" ]] && cp -fr "$REPO_DIR/FileSystems/HFSPlus/X64" "$WORKDIR/" || true
-ok "Toolchain and X64 folders copied for backup."
-
 # --- Git clone or reuse ---
 if [[ -d "$REPO_DIR" ]]; then
     warn "Existing CloverBootloader folder detected."
-
-    # --- Confirm delete & clone ---
     while true; do
         read -n1 -r -p "Delete and clone fresh? (y/n): " REPLY
         echo
@@ -108,10 +102,6 @@ if [[ -d "$REPO_DIR" ]]; then
         elif [[ $REPLY =~ ^[Nn]$ ]]; then
             say "Using existing folder."
             break
-        elif [[ ! $REPLY =~ [a-zA-Z] ]]; then
-            echo "Invalid option '$REPLY'. Repeat."
-        else
-            echo "Invalid option '$REPLY'. Repeat."
         fi
     done
 else
@@ -121,10 +111,6 @@ else
     make -C BaseTools BUILD_CC=clang
     cd "$WORKDIR"
 fi
-
-# --- Restore Toolchain & X64 automatically ---
-[[ -d "$WORKDIR/Toolchain" ]] && cp -r "$WORKDIR/Toolchain" "$REPO_DIR/"
-[[ -d "$WORKDIR/X64" ]] && cp -r "$WORKDIR/X64" "$REPO_DIR/FileSystems/HFSPlus/"
 
 # --- Fetch latest buildme ---
 git clone "$BUILDME_REPO" "$WORKDIR/tmp_buildme"
@@ -165,7 +151,6 @@ fi
 say "=== Setup Complete ==="
 ok "Clover repository ready."
 ok "Critical patches applied."
-ok "Toolchain and X64 restored."
 ok "buildme is ready."
 
 cd "$REPO_DIR"
